@@ -1,12 +1,32 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.buildkonfig)
+}
+
+buildkonfig {
+    packageName = "org.plux.marvelpedia"
+
+    defaultConfigs {
+        val marvelPublicKey: String = gradleLocalProperties(rootDir).getProperty("MARVEL_PUBLIC_KEY")
+        val marvelPrivateKey : String = gradleLocalProperties(rootDir).getProperty("MARVEL_PRIVATE_KEY")
+
+        require(marvelPublicKey.isNotEmpty() && marvelPrivateKey.isNotEmpty()) {
+            "Register your api key from developer and place it in local.properties"
+        }
+
+        buildConfigField(FieldSpec.Type.STRING, "MARVEL_PUBLIC_KEY", marvelPublicKey)
+        buildConfigField(FieldSpec.Type.STRING, "MARVEL_PRIVATE_KEY", marvelPrivateKey)
+    }
 }
 
 kotlin {
@@ -36,6 +56,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -46,6 +67,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.negotiation)
+            implementation(libs.kotlin.serialization)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlin.crypto.md5)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
