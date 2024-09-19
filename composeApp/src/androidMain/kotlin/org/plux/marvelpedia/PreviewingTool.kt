@@ -2,19 +2,19 @@ package org.plux.marvelpedia
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import org.plux.marvelpedia.features.hero_list.HeroListContent
-import org.plux.marvelpedia.features.hero_list.HeroListState
-import org.plux.marvelpedia.features.hero_list.model.Hero
+import org.plux.marvelpedia.features.character_list.CharacterListContent
+import org.plux.marvelpedia.features.character_list.CharacterListState
+import org.plux.marvelpedia.features.character_list.model.Character
 
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewHeroList(){
-    HeroListContent(uiState = HeroListState(
+    CharacterListContent(uiState = CharacterListState(
         isLoading = false,
-        heroList = listOf(
-            Hero(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
-            Hero(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
-            Hero(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
+        characterList = listOf(
+            Character(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
+            Character(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
+            Character(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
         )
     )
     )

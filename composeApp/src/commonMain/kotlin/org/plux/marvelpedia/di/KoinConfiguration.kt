@@ -8,7 +8,7 @@ object KoinConfiguration {
     fun initKoin(config: KoinAppDeclaration? = null){
         startKoin{
             config?.invoke(this)
-            modules(viewModelModule, heroListModule)
+            modules(viewModelModule, characterListModule)
         }
     }
 }
