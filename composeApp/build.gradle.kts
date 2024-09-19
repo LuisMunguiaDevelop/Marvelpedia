@@ -57,6 +57,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.ui.tooling.preview)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -72,6 +73,15 @@ kotlin {
             implementation(libs.kotlin.serialization)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlin.crypto.md5)
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose.viewmodel.navigation)
+            implementation(libs.voyager.navigation)
+            implementation(libs.voyager.koin)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

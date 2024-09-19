@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.Network.Marvel
+package org.plux.marvelpedia.network.marvel
 
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.datetime.Clock

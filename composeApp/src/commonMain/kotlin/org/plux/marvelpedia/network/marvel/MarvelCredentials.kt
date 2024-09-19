@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.Network.Marvel
+package org.plux.marvelpedia.network.marvel
 
 data class MarvelCredentials(
     val hash: String = "",
