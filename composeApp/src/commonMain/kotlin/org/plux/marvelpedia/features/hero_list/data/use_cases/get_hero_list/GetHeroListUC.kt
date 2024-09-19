@@ -16,7 +16,7 @@ class GetHeroListUC {
 
     private val apiUrl = MarvelClient.getUrl(MARVEL_API_CHARACTERS)
 
-    suspend operator fun invoke(): Flow<ApiResponse<MarvelResponse<HeroResponse>>> = flow  {
+    suspend operator fun invoke(offset: Int = 0): Flow<ApiResponse<MarvelResponse<HeroResponse>>> = flow  {
         emit(ApiResponse.Loading())
 
 
@@ -24,6 +24,7 @@ class GetHeroListUC {
             val call = marvelHttpClient.get(apiUrl) {
                 url {
                     parameters.appendAll(getMarvelRequestParams())
+                    if(offset != 0) parameters.append("offset", offset.toString())
                 }
             }
 
