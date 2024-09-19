@@ -1,10 +1,10 @@
-package org.plux.marvelpedia.features.hero_list.data.use_cases.get_hero_list
+package org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list
 
 import kotlinx.serialization.Serializable
 import org.plux.marvelpedia.commons.data.ThumbNailResponse
 
 @Serializable
-data class HeroResponse(
+data class CharacterResponse(
     val id: Int = 0,
     val name: String = "",
     val description: String? = "",

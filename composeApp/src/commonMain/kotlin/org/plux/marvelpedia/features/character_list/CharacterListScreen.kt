@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.hero_list
+package org.plux.marvelpedia.features.character_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,21 +19,21 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.koin.compose.koinInject
 import org.plux.marvelpedia.commons.ui.LoadingComponent
-import org.plux.marvelpedia.features.hero_list.model.Hero
-import org.plux.marvelpedia.features.hero_list.ui.HeroItem
+import org.plux.marvelpedia.features.character_list.model.Character
+import org.plux.marvelpedia.features.character_list.ui.CharacterItem
 import org.plux.marvelpedia.theme.primaryColor
 
-class HeroListScreen : Screen {
+class CharacterListScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: HeroListViewModel = koinInject()
+        val viewModel: CharacterListViewModel = koinInject()
         val uiState = viewModel.state
 
-        HeroListContent(
+        CharacterListContent(
             uiState = uiState,
             fetchList = {
-                viewModel.fetchHeroes()
+                viewModel.fetchCharacters()
             }
         )
     }
@@ -41,12 +41,12 @@ class HeroListScreen : Screen {
 }
 
 @Composable
-fun HeroListContent(
-    uiState: HeroListState,
+fun CharacterListContent(
+    uiState: CharacterListState,
     fetchList: () -> Unit = {}
 ) {
     val currentIndex = remember { mutableStateOf(0) }
-    val listSize = remember { mutableStateOf(uiState.heroList.size) }
+    val listSize = remember { mutableStateOf(uiState.characterList.size) }
 
     LaunchedEffect(key1 = listSize, key2 = currentIndex.value) {
         if (
@@ -68,8 +68,8 @@ fun HeroListContent(
         if (uiState.isLoading) {
             LoadingComponent()
         } else {
-            HeroLazyList(
-                heroList = uiState.heroList,
+            CharacterLazyList(
+                characterList = uiState.characterList,
                 setCurrentIndex = {
                     currentIndex.value = it
                 }
@@ -79,8 +79,8 @@ fun HeroListContent(
 }
 
 @Composable
-fun HeroLazyList(
-    heroList: List<Hero>,
+fun CharacterLazyList(
+    characterList: List<Character>,
     setCurrentIndex: (Int) -> Unit
 ) {
     val listState = rememberLazyGridState()
@@ -92,9 +92,9 @@ fun HeroLazyList(
         modifier = Modifier
             .background(color = primaryColor)
     ) {
-        items(heroList) { hero ->
-            HeroItem(hero = hero)
-            val currentIndex = heroList.indexOf(hero)
+        items(characterList) { character ->
+            CharacterItem(character = character)
+            val currentIndex = characterList.indexOf(character)
             LaunchedEffect(listState.firstVisibleItemIndex) {
                 setCurrentIndex(currentIndex)
             }

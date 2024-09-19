@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.hero_list
+package org.plux.marvelpedia.features.character_list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,15 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.plux.marvelpedia.features.hero_list.data.use_cases.get_hero_list.GetHeroListUC
-import org.plux.marvelpedia.features.hero_list.model.Hero
-import org.plux.marvelpedia.features.hero_list.model.toDomain
+import org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list.GetCharacterListUC
+import org.plux.marvelpedia.features.character_list.model.Character
+import org.plux.marvelpedia.features.character_list.model.toDomain
 import org.plux.marvelpedia.network.ApiResponse
 
-class HeroListViewModel(
-    private val getHeroListUC: GetHeroListUC
+class CharacterListViewModel(
+    private val getCharacterListUC: GetCharacterListUC
 ) : ViewModel() {
-    var state by mutableStateOf(HeroListState())
+    var state by mutableStateOf(CharacterListState())
         private set
 
     init {
@@ -25,7 +25,7 @@ class HeroListViewModel(
     }
 
     private fun getList() = viewModelScope.launch(Dispatchers.IO) {
-        getHeroListUC().collectLatest { response ->
+        getCharacterListUC().collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
                     setLoading(false)
@@ -36,17 +36,17 @@ class HeroListViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val heros: List<Hero> = response.data.data.results.map { it.toDomain() }
+                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
 
-                    state = state.copy(heroList = heros)
+                    state = state.copy(characterList = characters)
                     setLoading(false)
                 }
             }
         }
     }
 
-    fun fetchHeroes() = viewModelScope.launch(Dispatchers.IO) {
-        getHeroListUC(offset = state.heroList.size).collectLatest { response ->
+    fun fetchCharacters() = viewModelScope.launch(Dispatchers.IO) {
+        getCharacterListUC(offset = state.characterList.size).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
                     state = state.copy(isFetching = false)
@@ -57,11 +57,11 @@ class HeroListViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val heros: List<Hero> = response.data.data.results.map { it.toDomain() }
-                    val newList: MutableList<Hero> = state.heroList.toMutableList()
-                    newList.addAll(heros)
+                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
+                    val newList: MutableList<Character> = state.characterList.toMutableList()
+                    newList.addAll(characters)
                     state = state.copy(
-                        heroList = newList,
+                        characterList = newList,
                         isFetching = false
                     )
                 }

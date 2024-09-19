@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.hero_list.ui
+package org.plux.marvelpedia.features.character_list.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,13 +13,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import org.plux.marvelpedia.features.hero_list.model.Hero
+import org.plux.marvelpedia.features.character_list.model.Character
 import org.plux.marvelpedia.theme.Typography
 import org.plux.marvelpedia.theme.lightPrimaryColor
 
 @Composable
-fun HeroItem(
-    hero: Hero
+fun CharacterItem(
+    character: Character
 ) {
     Card(
         backgroundColor = lightPrimaryColor,
@@ -33,15 +33,15 @@ fun HeroItem(
         ) {
             //Photo
             AsyncImage(
-                model = hero.mainImage,
-                contentDescription = hero.name,
+                model = character.mainImage,
+                contentDescription = character.name,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(100.dp)
             )
 
             //Name
             Text(
-                text = hero.name,
+                text = character.name,
                 textAlign = TextAlign.Center,
                 style = Typography.body1,
                 modifier = Modifier.padding(top = 5.dp)
