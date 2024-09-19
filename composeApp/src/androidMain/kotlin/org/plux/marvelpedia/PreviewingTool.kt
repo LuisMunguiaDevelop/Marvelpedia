@@ -16,5 +16,6 @@ fun PreviewHeroList(){
             Hero(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
             Hero(name = "eaea", mainImage = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg"),
         )
-    ))
+    )
+    )
 }

@@ -26,24 +26,47 @@ class HeroListViewModel(
 
     private fun getList() = viewModelScope.launch(Dispatchers.IO) {
         getHeroListUC().collectLatest { response ->
-            when(response){
+            when (response) {
                 is ApiResponse.Error -> {
                     setLoading(false)
                 }
+
                 is ApiResponse.Loading -> {
                     setLoading(true)
                 }
+
                 is ApiResponse.Success -> {
                     val heros: List<Hero> = response.data.data.results.map { it.toDomain() }
 
-                    state = state.copy( heroList = heros)
+                    state = state.copy(heroList = heros)
                     setLoading(false)
                 }
             }
         }
     }
 
-    private fun setLoading(loading: Boolean){
+    fun fetchHeroes() = viewModelScope.launch(Dispatchers.IO) {
+        getHeroListUC(offset = state.heroList.size).collectLatest { response ->
+            when (response) {
+                is ApiResponse.Error -> {
+                }
+
+                is ApiResponse.Loading -> {
+                }
+
+                is ApiResponse.Success -> {
+                    val heros: List<Hero> = response.data.data.results.map { it.toDomain() }
+                    val newList: MutableList<Hero> = state.heroList.toMutableList()
+                    newList.addAll(heros)
+                    state = state.copy(
+                        heroList = newList
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setLoading(loading: Boolean) {
         state = state.copy(isLoading = loading)
     }
 

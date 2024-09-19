@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +32,9 @@ class HeroListScreen : Screen {
 
         HeroListContent(
             uiState = uiState,
+            fetchList = {
+                viewModel.fetchHeroes()
+            }
         )
     }
 
@@ -36,7 +43,18 @@ class HeroListScreen : Screen {
 @Composable
 fun HeroListContent(
     uiState: HeroListState,
+    fetchList: () -> Unit = {}
 ) {
+    val currentIndex = remember { mutableStateOf(0) }
+    val listSize = remember { mutableStateOf(uiState.heroList.size) }
+
+    LaunchedEffect(key1 = listSize, key2 = currentIndex.value) {
+        if (currentIndex.value >= (listSize.value) - 5 && currentIndex.value != 0) {
+            fetchList.invoke()
+            println("index: ${currentIndex.value}")
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -47,23 +65,36 @@ fun HeroListContent(
         if (uiState.isLoading) {
             LoadingComponent()
         } else {
-            HeroLazyList(heroList = uiState.heroList)
+            HeroLazyList(
+                heroList = uiState.heroList,
+                setCurrentIndex = {
+                    currentIndex.value = it
+                }
+            )
         }
     }
 }
 
 @Composable
 fun HeroLazyList(
-    heroList: List<Hero>
+    heroList: List<Hero>,
+    setCurrentIndex: (Int) -> Unit
 ) {
+    val listState = rememberLazyGridState()
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
         contentPadding = PaddingValues(10.dp),
+        state = listState,
         modifier = Modifier
             .background(color = primaryColor)
     ) {
         items(heroList) { hero ->
             HeroItem(hero = hero)
+            val currentIndex = heroList.indexOf(hero)
+            LaunchedEffect(listState.firstVisibleItemIndex) {
+                setCurrentIndex(currentIndex)
+            }
         }
     }
 }
