@@ -19,12 +19,11 @@ class GetHeroListUC {
     suspend operator fun invoke(offset: Int = 0): Flow<ApiResponse<MarvelResponse<HeroResponse>>> = flow  {
         emit(ApiResponse.Loading())
 
-
         try {
             val call = marvelHttpClient.get(apiUrl) {
                 url {
                     parameters.appendAll(getMarvelRequestParams())
-                    if(offset != 0) parameters.append("offset", offset.toString())
+                    if(offset != 0) parameters.append("offset", (offset+1).toString())
                 }
             }
 

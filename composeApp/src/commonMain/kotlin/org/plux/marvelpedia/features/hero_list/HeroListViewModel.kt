@@ -49,9 +49,11 @@ class HeroListViewModel(
         getHeroListUC(offset = state.heroList.size).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
+                    state = state.copy(isFetching = false)
                 }
 
                 is ApiResponse.Loading -> {
+                    state = state.copy(isFetching = true)
                 }
 
                 is ApiResponse.Success -> {
@@ -59,7 +61,8 @@ class HeroListViewModel(
                     val newList: MutableList<Hero> = state.heroList.toMutableList()
                     newList.addAll(heros)
                     state = state.copy(
-                        heroList = newList
+                        heroList = newList,
+                        isFetching = false
                     )
                 }
             }

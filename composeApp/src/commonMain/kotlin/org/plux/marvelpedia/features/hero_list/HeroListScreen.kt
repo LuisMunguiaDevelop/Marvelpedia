@@ -49,9 +49,12 @@ fun HeroListContent(
     val listSize = remember { mutableStateOf(uiState.heroList.size) }
 
     LaunchedEffect(key1 = listSize, key2 = currentIndex.value) {
-        if (currentIndex.value >= (listSize.value) - 5 && currentIndex.value != 0) {
+        if (
+            currentIndex.value >= (listSize.value) - 5
+            && currentIndex.value != 0
+            && !uiState.isFetching
+        ) {
             fetchList.invoke()
-            println("index: ${currentIndex.value}")
         }
     }
 
