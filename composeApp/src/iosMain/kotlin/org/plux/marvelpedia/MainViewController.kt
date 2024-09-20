@@ -5,4 +5,7 @@ import org.plux.marvelpedia.di.KoinConfiguration
 
 fun MainViewController() = ComposeUIViewController(
     configure = { KoinConfiguration.initKoin() }
-) { App() }
+) {
+    App()
+
+}
