@@ -4,13 +4,15 @@ import org.plux.marvelpedia.features.character_list.data.use_cases.get_character
 
 
 data class Character(
-    val name: String,
-    val mainImage: String,
+    val name: String = "",
+    val mainImage: String = "",
+    val description: String = "",
 )
 
 fun CharacterResponse.toDomain(): Character{
     return Character(
         name = this.name,
-        mainImage = this.thumbnail.getURL()
+        mainImage = this.thumbnail.getURL(),
+        description = this.description ?: ""
     )
 }

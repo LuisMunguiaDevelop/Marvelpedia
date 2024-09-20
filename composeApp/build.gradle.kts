@@ -80,6 +80,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.voyager.navigation)
             implementation(libs.voyager.koin)
+            implementation(libs.voyager.transitions)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
         }

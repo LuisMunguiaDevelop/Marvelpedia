@@ -1,5 +1,6 @@
 package org.plux.marvelpedia.features.character_list.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +20,8 @@ import org.plux.marvelpedia.theme.lightPrimaryColor
 
 @Composable
 fun CharacterItem(
-    character: Character
+    character: Character,
+    onClick: (Character) -> Unit
 ) {
     Card(
         backgroundColor = lightPrimaryColor,
@@ -27,6 +29,7 @@ fun CharacterItem(
             .fillMaxWidth()
             .size(180.dp)
             .padding(5.dp)
+            .clickable { onClick.invoke(character) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
