@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_list
+package org.plux.marvelpedia.features.character_search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,45 +9,55 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.plux.marvelpedia.commons.model.handleFilteredList
 import org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list.GetCharacterListUC
 import org.plux.marvelpedia.features.character_list.model.Character
 import org.plux.marvelpedia.features.character_list.model.toDomain
 import org.plux.marvelpedia.network.ApiResponse
 
-class CharacterListViewModel(
+class CharacterSearchViewModel(
     private val getCharacterListUC: GetCharacterListUC
 ) : ViewModel() {
-    var state by mutableStateOf(CharacterListState())
+    var state by mutableStateOf(CharacterSearchState())
         private set
 
-
-
-    init {
-        getList()
+    fun getList(nameFilter: String = "") {
+        handleFilteredList(
+            state = state,
+            nameFilter = nameFilter,
+            fetchList = { getFilteredList(state.nameFilter) },
+            clearList = { state = state.copy(list = emptyList())}
+        )
     }
 
-     private fun getList() = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC().collectLatest { response ->
+    fun onBackPressed(){
+        state = CharacterSearchState()
+    }
+
+    private fun getFilteredList(nameFilter: String = "") = viewModelScope.launch(Dispatchers.IO) {
+        getCharacterListUC(nameFilter = nameFilter).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
-                    setLoading(false)
                 }
 
                 is ApiResponse.Loading -> {
-                    setLoading(true)
+                    state = state.copy(isLoading = true)
                 }
 
                 is ApiResponse.Success -> {
-                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
-                    state.characterList.addAll(characters)
-                    setLoading(false)
+                    val characters: List<Character> =
+                        response.data.data.results.map { it.toDomain() }
+                    state = state.copy(list = characters, isLoading = false)
                 }
             }
         }
     }
 
     fun fetchCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC(offset = state.characterList.size).collectLatest { response ->
+        getCharacterListUC(
+            offset = state.list.size,
+            nameFilter = state.nameFilter
+        ).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
                     state = state.copy(isFetching = false)
@@ -58,20 +68,17 @@ class CharacterListViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
-                    val newList: MutableList<Character> = state.characterList.toMutableList()
+                    val characters: List<Character> =
+                        response.data.data.results.map { it.toDomain() }
+                    val newList: MutableList<Character> = state.list.toMutableList()
                     newList.addAll(characters)
                     state = state.copy(
-                        characterList = newList,
+                        list = newList,
                         isFetching = false
                     )
                 }
             }
         }
-    }
-
-    private fun setLoading(loading: Boolean) {
-        state = state.copy(isLoading = loading)
     }
 
 }
