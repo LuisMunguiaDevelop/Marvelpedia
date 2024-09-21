@@ -57,14 +57,12 @@ fun CharacterDetailContent(
         },
         modifier = Modifier
             .fillMaxSize()
-            //.windowInsetsPadding(WindowInsets.safeDrawing)
     ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                //.windowInsetsPadding(WindowInsets.statusBars)
         ) {
             //Photo
             AsyncImage(
