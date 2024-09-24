@@ -21,12 +21,17 @@ class CharacterListViewModel(
         private set
 
 
-
     init {
         getList()
     }
 
-     private fun getList() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchCharacters() {
+        if (state.isFetching) return
+        fetch()
+        state = state.copy(isFetching = true)
+    }
+
+    private fun getList() = viewModelScope.launch(Dispatchers.IO) {
         getCharacterListUC().collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
@@ -38,7 +43,8 @@ class CharacterListViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
+                    val characters: List<Character> =
+                        response.data.data.results.map { it.toDomain() }
                     state.characterList.addAll(characters)
                     setLoading(false)
                 }
@@ -46,7 +52,8 @@ class CharacterListViewModel(
         }
     }
 
-    fun fetchCharacters() = viewModelScope.launch(Dispatchers.IO) {
+    private fun fetch() = viewModelScope.launch(Dispatchers.IO) {
+        state = state.copy(isFetching = true)
         getCharacterListUC(offset = state.characterList.size).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
@@ -58,7 +65,8 @@ class CharacterListViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val characters: List<Character> = response.data.data.results.map { it.toDomain() }
+                    val characters: List<Character> =
+                        response.data.data.results.map { it.toDomain() }
                     val newList: MutableList<Character> = state.characterList.toMutableList()
                     newList.addAll(characters)
                     state = state.copy(

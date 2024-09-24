@@ -14,7 +14,7 @@ class MarvelParametersBuilder {
         parameters.append(MarvelParameters.APIKEY, BuildKonfig.MARVEL_PUBLIC_KEY)
         parameters.append(MarvelParameters.TS, credentials.timeStamp)
         parameters.append(MarvelParameters.HASH, credentials.hash)
-        if (offset != 0) parameters.append(MarvelParameters.OFFSET, (offset + 1).toString())
+        if (offset != 0) parameters.append(MarvelParameters.OFFSET, offset.toString())
         if(nameFilter.isNotBlank()) parameters.append(MarvelParameters.NAME_FILTER, nameFilter)
         return parameters.build()
     }

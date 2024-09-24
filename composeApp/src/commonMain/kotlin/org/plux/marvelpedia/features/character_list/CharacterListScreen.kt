@@ -3,7 +3,9 @@ package org.plux.marvelpedia.features.character_list
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ import marvelpedia.composeapp.generated.resources.Res
 import marvelpedia.composeapp.generated.resources.search_icon
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.plux.marvelpedia.commons.model.GridLaunchedEffect
 import org.plux.marvelpedia.commons.model.ScrollingTypes
 import org.plux.marvelpedia.commons.ui.LoadingComponent
 import org.plux.marvelpedia.features.character_detail.CharacterDetailScreen
@@ -64,14 +66,15 @@ fun CharacterListContent(
 ) {
     val showSearchBar = remember { mutableStateOf(true) }
     val navigator = LocalNavigator.currentOrThrow
+    val endOfListReached = remember { mutableStateOf(false) }
 
     Scaffold(
         backgroundColor = primaryColor,
         topBar = {
-            if(showSearchBar.value && !uiState.isLoading)
-            CharacterListTopBar(
-                onSearchPressed = { navigator.push(CharacterSearchScreen()) }
-            )
+            if (showSearchBar.value && !uiState.isLoading)
+                CharacterListTopBar(
+                    onSearchPressed = { navigator.push(CharacterSearchScreen()) }
+                )
         },
         modifier = Modifier
             .fillMaxSize()
@@ -87,19 +90,29 @@ fun CharacterListContent(
             if (uiState.isLoading) {
                 LoadingComponent()
             } else {
-                CharacterLazyList(
-                    characterList = uiState.characterList,
-                    getScrollType = {
-                        when (it) {
-                            ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
-                            ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
-                            ScrollingTypes.NONE -> showSearchBar.value = true
-                        }
-                    },
-                    onEndReached = {
-                        if (!uiState.isFetching) fetchList.invoke()
-                    },
-                )
+                Box {
+                    CharacterLazyList(
+                        characterList = uiState.characterList,
+                        onEndReached = {
+                            endOfListReached.value = true
+                        },
+                        getScrollType = {
+                            when (it) {
+                                ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
+                                ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
+                                ScrollingTypes.NONE -> showSearchBar.value = true
+                                ScrollingTypes.FETCH -> {
+                                    if (!uiState.isFetching) fetchList.invoke()
+                                }
+                            }
+                        },
+                    )
+
+                    if (uiState.isFetching && endOfListReached.value)
+                        LoadingComponent(
+                            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+                        )
+                }
             }
         }
     }
@@ -115,6 +128,8 @@ fun CharacterLazyList(
     val listState = rememberLazyGridState()
     val navigator = LocalNavigator.currentOrThrow
     val previousIndex = remember { mutableStateOf(0) }
+    val buffer = 5
+
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -122,7 +137,9 @@ fun CharacterLazyList(
         state = listState,
         modifier = Modifier
             .background(color = primaryColor)
-            .fillMaxSize()
+            .fillMaxSize(),
+        flingBehavior = ScrollableDefaults.flingBehavior()
+
     ) {
         items(characterList) { character ->
 
@@ -131,15 +148,19 @@ fun CharacterLazyList(
                 onClick = { navigator.push(CharacterDetailScreen(character = it)) }
             )
 
-            LaunchedEffect(listState.firstVisibleItemIndex) {
+            GridLaunchedEffect(
+                listState = listState,
+                buffer = buffer,
+                getScrollType = { getScrollType.invoke(it) },
+                previousIndex = previousIndex,
+            )
 
-                if (listState.firstVisibleItemIndex > previousIndex.value) {
-                    getScrollType.invoke(ScrollingTypes.SCROLL_DOWN)
-                } else if (listState.firstVisibleItemIndex < previousIndex.value) {
-                    getScrollType.invoke(ScrollingTypes.SCROLL_UP)
-                }
-                previousIndex.value = listState.firstVisibleItemIndex
-            }
+            previousIndex.value = listState.firstVisibleItemIndex
+        }
+
+
+        item {
+            onEndReached.invoke()
         }
     }
 
@@ -167,3 +188,5 @@ fun CharacterListTopBar(
         )
     }
 }
+
+

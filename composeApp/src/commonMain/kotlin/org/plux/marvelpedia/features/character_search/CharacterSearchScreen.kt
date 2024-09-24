@@ -71,11 +71,12 @@ fun CharacterSearchContent(
                     ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
                     ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
                     ScrollingTypes.NONE -> showSearchBar.value = true
+                    ScrollingTypes.FETCH -> {}
                 }
             },
-            onEndReached = {
+            /*onEndReached = {
                 if (!uiState.isFetching) fetchList.invoke()
-            },
+            },*/
         )
 
         //End of Scaffold content
