@@ -32,7 +32,7 @@ class CharacterListViewModel(
     }
 
     private fun getList() = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC().collectLatest { response ->
+        getCharacterListUC(limit = 40).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
                     setLoading(false)

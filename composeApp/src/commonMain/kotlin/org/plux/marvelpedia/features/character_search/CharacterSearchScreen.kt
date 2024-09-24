@@ -10,7 +10,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
-import org.plux.marvelpedia.commons.model.ScrollingTypes
 import org.plux.marvelpedia.commons.ui.SearchBarComponent
 import org.plux.marvelpedia.features.character_list.CharacterLazyList
 import org.plux.marvelpedia.theme.primaryColor
@@ -24,7 +23,7 @@ class CharacterSearchScreen : Screen {
 
         CharacterSearchContent(
             uiState = uiState,
-            fetchList = { },
+            //fetchList = { },
             onCharacterSearch = { viewModel.getList(it) },
             onBackPressed = { viewModel.onBackPressed() }
         )
@@ -35,7 +34,7 @@ class CharacterSearchScreen : Screen {
 @Composable
 fun CharacterSearchContent(
     uiState: CharacterSearchState,
-    fetchList: () -> Unit = {},
+    //fetchList: () -> Unit = {},
     onCharacterSearch: (String) -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
@@ -66,14 +65,15 @@ fun CharacterSearchContent(
         //Scaffold content
         CharacterLazyList(
             characterList = uiState.list,
-            getScrollType = {
+            /*getScrollType = {
                 when (it) {
                     ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
                     ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
                     ScrollingTypes.NONE -> showSearchBar.value = true
                     ScrollingTypes.FETCH -> {}
+                    ScrollingTypes.END_REACHED -> {}
                 }
-            },
+            },*/
             /*onEndReached = {
                 if (!uiState.isFetching) fetchList.invoke()
             },*/
