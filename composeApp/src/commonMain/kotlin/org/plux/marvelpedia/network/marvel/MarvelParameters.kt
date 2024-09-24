@@ -6,4 +6,5 @@ object MarvelParameters {
     const val TS = "ts"
     const val OFFSET = "offset"
     const val NAME_FILTER = "nameStartsWith"
+    const val LIMIT = "limit"
 }

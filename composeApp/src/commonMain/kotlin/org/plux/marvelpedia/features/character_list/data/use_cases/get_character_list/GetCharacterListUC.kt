@@ -16,7 +16,11 @@ class GetCharacterListUC {
 
     private val apiUrl = MarvelClient.getUrl(MARVEL_API_CHARACTERS)
 
-    suspend operator fun invoke(offset: Int = 0, nameFilter: String = ""): Flow<ApiResponse<MarvelResponse<CharacterResponse>>> =
+    suspend operator fun invoke(
+        offset: Int = 0,
+        nameFilter: String = "",
+        limit: Int = 20
+    ): Flow<ApiResponse<MarvelResponse<CharacterResponse>>> =
         flow {
             emit(ApiResponse.Loading())
 
@@ -27,6 +31,7 @@ class GetCharacterListUC {
                             MarvelParametersBuilder()
                                 .setOffset(offset)
                                 .setNameFilter(nameFilter)
+                                .setLimit(limit)
                                 .build()
                         )
                     }

@@ -83,6 +83,7 @@ kotlin {
             implementation(libs.voyager.transitions)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

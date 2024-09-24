@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ import marvelpedia.composeapp.generated.resources.Res
 import marvelpedia.composeapp.generated.resources.search_icon
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.plux.marvelpedia.commons.model.ScrollingTypes
+import org.plux.marvelpedia.commons.model.LazyListLaunchedEffect
 import org.plux.marvelpedia.commons.ui.LoadingComponent
 import org.plux.marvelpedia.features.character_detail.CharacterDetailScreen
 import org.plux.marvelpedia.features.character_list.model.Character
@@ -64,14 +65,19 @@ fun CharacterListContent(
 ) {
     val showSearchBar = remember { mutableStateOf(true) }
     val navigator = LocalNavigator.currentOrThrow
+    val endOfListReached = remember { mutableStateOf(true) }
+
+    LaunchedEffect(uiState.isFetching) {
+        if (!uiState.isFetching) endOfListReached.value = false
+    }
 
     Scaffold(
         backgroundColor = primaryColor,
         topBar = {
-            if(showSearchBar.value && !uiState.isLoading)
-            CharacterListTopBar(
-                onSearchPressed = { navigator.push(CharacterSearchScreen()) }
-            )
+            if (showSearchBar.value && !uiState.isLoading)
+                CharacterListTopBar(
+                    onSearchPressed = { navigator.push(CharacterSearchScreen()) }
+                )
         },
         modifier = Modifier
             .fillMaxSize()
@@ -87,19 +93,22 @@ fun CharacterListContent(
             if (uiState.isLoading) {
                 LoadingComponent()
             } else {
-                CharacterLazyList(
-                    characterList = uiState.characterList,
-                    getScrollType = {
-                        when (it) {
-                            ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
-                            ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
-                            ScrollingTypes.NONE -> showSearchBar.value = true
-                        }
-                    },
-                    onEndReached = {
-                        if (!uiState.isFetching) fetchList.invoke()
-                    },
-                )
+                Box {
+                    CharacterLazyList(
+                        characterList = uiState.characterList,
+                        onScrollUp = { showSearchBar.value = true },
+                        onScrollDown = { showSearchBar.value = false },
+                        onFetchDetected = {
+                            if (!uiState.isFetching) fetchList.invoke()
+                        },
+                        onEndReached = { endOfListReached.value = true }
+                    )
+
+                    if (endOfListReached.value)
+                        LoadingComponent(
+                            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+                        )
+                }
             }
         }
     }
@@ -109,40 +118,40 @@ fun CharacterListContent(
 @Composable
 fun CharacterLazyList(
     characterList: List<Character>,
-    getScrollType: (ScrollingTypes) -> Unit = { },
+    onScrollUp: () -> Unit = {},
+    onScrollDown: () -> Unit = {},
+    onFetchDetected: () -> Unit = {},
     onEndReached: () -> Unit = {},
 ) {
     val listState = rememberLazyGridState()
     val navigator = LocalNavigator.currentOrThrow
-    val previousIndex = remember { mutableStateOf(0) }
+
+    LazyListLaunchedEffect(
+        listState = listState,
+        buffer = 10,
+        onForwardScrollDetected = { onScrollUp.invoke() },
+        onBackwardScrollDetected = { onScrollDown.invoke() },
+        onFetchDetected = { onFetchDetected.invoke() },
+        onEndReached = { onEndReached.invoke() }
+    )
+
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(4),
         contentPadding = PaddingValues(10.dp),
         state = listState,
         modifier = Modifier
             .background(color = primaryColor)
-            .fillMaxSize()
-    ) {
-        items(characterList) { character ->
+            .fillMaxSize(),
 
+        ) {
+        items(characterList) { character ->
             CharacterItem(
                 character = character,
                 onClick = { navigator.push(CharacterDetailScreen(character = it)) }
             )
-
-            LaunchedEffect(listState.firstVisibleItemIndex) {
-
-                if (listState.firstVisibleItemIndex > previousIndex.value) {
-                    getScrollType.invoke(ScrollingTypes.SCROLL_DOWN)
-                } else if (listState.firstVisibleItemIndex < previousIndex.value) {
-                    getScrollType.invoke(ScrollingTypes.SCROLL_UP)
-                }
-                previousIndex.value = listState.firstVisibleItemIndex
-            }
         }
     }
-
 
 }
 
@@ -167,3 +176,7 @@ fun CharacterListTopBar(
         )
     }
 }
+
+
+
+
