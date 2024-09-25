@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.characters.character_list
+package org.plux.marvelpedia.commons.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,12 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -28,59 +27,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import marvelpedia.composeapp.generated.resources.Res
+import marvelpedia.composeapp.generated.resources.back_arrow
 import marvelpedia.composeapp.generated.resources.search_icon
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.model.LazyListLaunchedEffect
-import org.plux.marvelpedia.commons.ui.LoadingComponent
-import org.plux.marvelpedia.features.characters.character_detail.CharacterDetailScreen
-import org.plux.marvelpedia.features.characters.character_list.model.Character
-import org.plux.marvelpedia.features.characters.character_list.ui.CharacterItem
-import org.plux.marvelpedia.features.characters.character_search.CharacterSearchScreen
-import org.plux.marvelpedia.features.comics.comic_list.ComicListScreen
+import org.plux.marvelpedia.theme.Typography
 import org.plux.marvelpedia.theme.primaryColor
 
-class CharacterListScreen : Screen {
-
-    @Composable
-    override fun Content() {
-        val viewModel = koinViewModel<CharacterListViewModel>()
-        val uiState by lazy { viewModel.state }
-
-        CharacterListContent(
-            uiState = uiState,
-            fetchList = {
-                viewModel.fetchCharacters()
-            },
+@Composable
+fun CollectionMainContent(
+    title: String = "",
+    content: LazyGridScope.() -> Unit,
+    isLoading: Boolean = false,
+    isFetching: Boolean = false,
+    fetchDetected: () -> Unit = {},
+    onSearchPressed: () -> Unit = {},
+    onBackPressed: () -> Unit = {},
+    topBar: @Composable () -> Unit = {
+        CollectionMainScreenTopBar(
+            title = title,
+            onSearchPressed = { onSearchPressed.invoke() },
+            onBackPressed = { onBackPressed.invoke() }
         )
     }
-
-}
-
-@Composable
-fun CharacterListContent(
-    uiState: CharacterListState,
-    fetchList: () -> Unit = {},
 ) {
     val showSearchBar = remember { mutableStateOf(true) }
-    val navigator = LocalNavigator.currentOrThrow
     val endOfListReached = remember { mutableStateOf(true) }
 
-    LaunchedEffect(uiState.isFetching) {
-        if (!uiState.isFetching) endOfListReached.value = false
+    LaunchedEffect(isFetching) {
+        if (!isFetching) endOfListReached.value = false
     }
 
     Scaffold(
         backgroundColor = primaryColor,
         topBar = {
-            if (showSearchBar.value && !uiState.isLoading)
-                CharacterListTopBar(
-                    onSearchPressed = { navigator.push(CharacterSearchScreen()) }
-                )
+            if (showSearchBar.value && !isLoading)
+                topBar()
         },
         modifier = Modifier
             .fillMaxSize()
@@ -93,18 +76,24 @@ fun CharacterListContent(
                 .background(color = primaryColor)
                 .padding(innerPadding)
         ) {
-            if (uiState.isLoading) {
+            if (isLoading) {
                 LoadingComponent()
             } else {
                 Box {
-                    CharacterLazyList(
-                        characterList = uiState.characterList,
-                        onScrollUp = { showSearchBar.value = true },
-                        onScrollDown = { showSearchBar.value = false },
-                        onFetchDetected = {
-                            if (!uiState.isFetching) fetchList.invoke()
+                    CollectionMainList(
+                        content = content,
+                        onScrollUp = {
+                            showSearchBar.value = true
                         },
-                        onEndReached = { endOfListReached.value = true }
+                        onScrollDown = {
+                            showSearchBar.value = false
+                        },
+                        onFetchDetected = {
+                            if (!isFetching) fetchDetected.invoke()
+                        },
+                        onEndReached = {
+                            endOfListReached.value = true
+                        }
                     )
 
                     if (endOfListReached.value)
@@ -117,10 +106,9 @@ fun CharacterListContent(
     }
 }
 
-
 @Composable
-fun CharacterLazyList(
-    characterList: List<Character>,
+fun CollectionMainList(
+    content: LazyGridScope.() -> Unit,
     onScrollUp: () -> Unit = {},
     onScrollDown: () -> Unit = {},
     onFetchDetected: () -> Unit = {},
@@ -128,17 +116,18 @@ fun CharacterLazyList(
     isFetchable: Boolean = true
 ) {
     val listState = rememberLazyGridState()
-    val navigator = LocalNavigator.currentOrThrow
 
-    if(isFetchable)
-    LazyListLaunchedEffect(
-        listState = listState,
-        buffer = 10,
-        onForwardScrollDetected = { onScrollUp.invoke() },
-        onBackwardScrollDetected = { onScrollDown.invoke() },
-        onFetchDetected = { onFetchDetected.invoke() },
-        onEndReached = { onEndReached.invoke() }
-    )
+    if (isFetchable)
+        LazyListLaunchedEffect(
+            listState = listState,
+            buffer = 10,
+            getScrollableEvents = true,
+            onForwardScrollDetected = { onScrollDown.invoke() },
+            onBackwardScrollDetected = { onScrollUp.invoke() },
+            onFetchDetected = { onFetchDetected.invoke() },
+            onEndReached = { onEndReached.invoke() }
+        )
+
 
 
     LazyVerticalGrid(
@@ -148,49 +137,42 @@ fun CharacterLazyList(
         modifier = Modifier
             .background(color = primaryColor)
             .fillMaxSize(),
-
-        ) {
-        items(characterList) { character ->
-            CharacterItem(
-                character = character,
-                onClick = { navigator.push(CharacterDetailScreen(character = it)) }
-            )
-        }
-    }
-
+        content = content
+    )
 }
 
 @Composable
-fun CharacterListTopBar(
+fun CollectionMainScreenTopBar(
+    title: String = "",
     onSearchPressed: () -> Unit,
+    onBackPressed: () -> Unit = {},
 ) {
-    val navigator = LocalNavigator.currentOrThrow
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
 
-        TextButton(
-            onClick = { navigator.push(ComicListScreen())},
-        ){
-            Text(
-                text = "Comics"
-            )
-        }
+        Image(
+            painter = painterResource(Res.drawable.back_arrow),
+            contentDescription = "search",
+            modifier = Modifier
+                .clickable { onBackPressed.invoke() }
+        )
+
+        Text(
+            text = title,
+            style = Typography.subtitle1
+        )
 
         Image(
             painter = painterResource(Res.drawable.search_icon),
-            contentDescription = "search character",
+            contentDescription = "search",
             modifier = Modifier
                 .clickable { onSearchPressed.invoke() }
         )
     }
 }
-
-
-
-
