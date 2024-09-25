@@ -65,18 +65,7 @@ fun CharacterSearchContent(
         //Scaffold content
         CharacterLazyList(
             characterList = uiState.list,
-            /*getScrollType = {
-                when (it) {
-                    ScrollingTypes.SCROLL_UP -> showSearchBar.value = true
-                    ScrollingTypes.SCROLL_DOWN -> showSearchBar.value = false
-                    ScrollingTypes.NONE -> showSearchBar.value = true
-                    ScrollingTypes.FETCH -> {}
-                    ScrollingTypes.END_REACHED -> {}
-                }
-            },*/
-            /*onEndReached = {
-                if (!uiState.isFetching) fetchList.invoke()
-            },*/
+            isFetchable = false
         )
 
         //End of Scaffold content
