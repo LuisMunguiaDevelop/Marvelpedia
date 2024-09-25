@@ -1,6 +1,6 @@
-package org.plux.marvelpedia.features.character_list
+package org.plux.marvelpedia.features.characters.character_list
 
-import org.plux.marvelpedia.features.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.model.Character
 
 data class CharacterListState(
     val characterList: MutableList<Character> = mutableListOf(),

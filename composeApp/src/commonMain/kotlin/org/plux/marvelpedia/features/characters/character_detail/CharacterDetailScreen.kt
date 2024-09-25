@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_detail
+package org.plux.marvelpedia.features.characters.character_detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +20,7 @@ import cafe.adriel.voyager.navigator.internal.BackHandler
 import coil3.compose.AsyncImage
 import org.koin.compose.koinInject
 import org.plux.marvelpedia.commons.ui.TopBarComponent
-import org.plux.marvelpedia.features.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.model.Character
 import org.plux.marvelpedia.theme.Typography
 import org.plux.marvelpedia.theme.primaryColor
 

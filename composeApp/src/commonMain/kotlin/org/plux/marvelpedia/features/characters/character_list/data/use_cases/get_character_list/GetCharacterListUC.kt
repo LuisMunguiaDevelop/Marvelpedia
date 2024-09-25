@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list
+package org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list
 
 import io.ktor.client.call.body
 import io.ktor.client.request.get

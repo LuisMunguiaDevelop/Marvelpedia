@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_search
+package org.plux.marvelpedia.features.characters.character_search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,9 +10,9 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.plux.marvelpedia.commons.model.handleFilteredList
-import org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list.GetCharacterListUC
-import org.plux.marvelpedia.features.character_list.model.Character
-import org.plux.marvelpedia.features.character_list.model.toDomain
+import org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list.GetCharacterListUC
+import org.plux.marvelpedia.features.characters.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.model.toDomain
 import org.plux.marvelpedia.network.ApiResponse
 
 class CharacterSearchViewModel(
