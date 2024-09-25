@@ -122,10 +122,12 @@ fun CharacterLazyList(
     onScrollDown: () -> Unit = {},
     onFetchDetected: () -> Unit = {},
     onEndReached: () -> Unit = {},
+    isFetchable: Boolean = true
 ) {
     val listState = rememberLazyGridState()
     val navigator = LocalNavigator.currentOrThrow
 
+    if(isFetchable)
     LazyListLaunchedEffect(
         listState = listState,
         buffer = 10,
