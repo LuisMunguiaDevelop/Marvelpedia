@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.plux.marvelpedia.features.character_list.CharacterListScreen
+import org.plux.marvelpedia.features.characters.character_list.CharacterListScreen
 
 
 @Composable

@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_search
+package org.plux.marvelpedia.features.characters.character_search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,9 +10,9 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.plux.marvelpedia.commons.model.handleFilteredList
-import org.plux.marvelpedia.features.character_list.data.use_cases.get_character_list.GetCharacterListUC
-import org.plux.marvelpedia.features.character_list.model.Character
-import org.plux.marvelpedia.features.character_list.model.toDomain
+import org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list.GetCharacterListUC
+import org.plux.marvelpedia.features.characters.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.model.toDomain
 import org.plux.marvelpedia.network.ApiResponse
 
 class CharacterSearchViewModel(
@@ -48,34 +48,6 @@ class CharacterSearchViewModel(
                     val characters: List<Character> =
                         response.data.data.results.map { it.toDomain() }
                     state = state.copy(list = characters, isLoading = false)
-                }
-            }
-        }
-    }
-
-    fun fetchCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC(
-            offset = state.list.size,
-            nameFilter = state.nameFilter
-        ).collectLatest { response ->
-            when (response) {
-                is ApiResponse.Error -> {
-                    state = state.copy(isFetching = false)
-                }
-
-                is ApiResponse.Loading -> {
-                    state = state.copy(isFetching = true)
-                }
-
-                is ApiResponse.Success -> {
-                    val characters: List<Character> =
-                        response.data.data.results.map { it.toDomain() }
-                    val newList: MutableList<Character> = state.list.toMutableList()
-                    newList.addAll(characters)
-                    state = state.copy(
-                        list = newList,
-                        isFetching = false
-                    )
                 }
             }
         }

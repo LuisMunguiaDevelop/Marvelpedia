@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_list.ui
+package org.plux.marvelpedia.features.characters.character_list.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import org.plux.marvelpedia.features.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.model.Character
 import org.plux.marvelpedia.theme.Typography
 import org.plux.marvelpedia.theme.lightPrimaryColor
 

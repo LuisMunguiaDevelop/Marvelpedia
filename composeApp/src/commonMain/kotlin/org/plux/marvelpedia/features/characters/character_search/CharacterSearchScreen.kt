@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_search
+package org.plux.marvelpedia.features.characters.character_search
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
@@ -11,7 +11,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.SearchBarComponent
-import org.plux.marvelpedia.features.character_list.CharacterLazyList
+import org.plux.marvelpedia.features.characters.character_list.CharacterLazyList
 import org.plux.marvelpedia.theme.primaryColor
 
 class CharacterSearchScreen : Screen {

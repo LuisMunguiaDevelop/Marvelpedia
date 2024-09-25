@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.character_list
+package org.plux.marvelpedia.features.characters.character_list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,10 +35,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.model.LazyListLaunchedEffect
 import org.plux.marvelpedia.commons.ui.LoadingComponent
-import org.plux.marvelpedia.features.character_detail.CharacterDetailScreen
-import org.plux.marvelpedia.features.character_list.model.Character
-import org.plux.marvelpedia.features.character_list.ui.CharacterItem
-import org.plux.marvelpedia.features.character_search.CharacterSearchScreen
+import org.plux.marvelpedia.features.characters.character_detail.CharacterDetailScreen
+import org.plux.marvelpedia.features.characters.character_list.model.Character
+import org.plux.marvelpedia.features.characters.character_list.ui.CharacterItem
+import org.plux.marvelpedia.features.characters.character_search.CharacterSearchScreen
 import org.plux.marvelpedia.theme.primaryColor
 
 class CharacterListScreen : Screen {
