@@ -53,32 +53,4 @@ class CharacterSearchViewModel(
         }
     }
 
-    fun fetchCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC(
-            offset = state.list.size,
-            nameFilter = state.nameFilter
-        ).collectLatest { response ->
-            when (response) {
-                is ApiResponse.Error -> {
-                    state = state.copy(isFetching = false)
-                }
-
-                is ApiResponse.Loading -> {
-                    state = state.copy(isFetching = true)
-                }
-
-                is ApiResponse.Success -> {
-                    val characters: List<Character> =
-                        response.data.data.results.map { it.toDomain() }
-                    val newList: MutableList<Character> = state.list.toMutableList()
-                    newList.addAll(characters)
-                    state = state.copy(
-                        list = newList,
-                        isFetching = false
-                    )
-                }
-            }
-        }
-    }
-
 }
