@@ -1,5 +1,6 @@
 package org.plux.marvelpedia.commons.model
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,58 +12,63 @@ import androidx.compose.runtime.remember
 fun LazyListLaunchedEffect(
     listState: LazyGridState,
     buffer: Int = 5,
-    onForwardScrollDetected: () -> Unit = {},
-    onBackwardScrollDetected: () -> Unit = {},
-    onFetchDetected: () -> Unit = {},
-    onEndReached: () -> Unit = {}
-){
+    onForwardScrollDetected: () -> Unit,
+    onBackwardScrollDetected: () -> Unit,
+    onFetchDetected: () -> Unit,
+    onEndReached: () -> Unit,
+    getScrollableEvents: Boolean = true,
+    getFetchEvents: Boolean = true,
+    getEndReachedEvents: Boolean = true
+) {
     val lastScrollPosition = remember { mutableStateOf(listState.firstVisibleItemIndex) }
     val lastScrollType = remember { mutableStateOf(ScrollingTypes.NONE) }
     val lastFetchedAt = remember { mutableStateOf(0) }
 
-    LaunchedEffect(
-        key1 = listState.firstVisibleItemIndex,
-        key2 = listState.layoutInfo.visibleItemsInfo.lastOrNull(),
-        key3 = !listState.canScrollForward
-    ) {
 
-        //Check if user scrolled down
-        if (listState.firstVisibleItemIndex > lastScrollPosition.value) {
+    Box {
+        if(getScrollableEvents)
+        LaunchedEffect(listState.firstVisibleItemIndex) {
 
-            if (lastScrollType.value != ScrollingTypes.SCROLL_DOWN) {
+            if (listState.firstVisibleItemIndex < lastScrollPosition.value && lastScrollType.value != ScrollingTypes.SCROLL_BACKWARDS) {
+                lastScrollType.value = ScrollingTypes.SCROLL_BACKWARDS
                 onBackwardScrollDetected.invoke()
-                lastScrollType.value = ScrollingTypes.SCROLL_DOWN
             }
 
-        }
-
-        //Check if user scrolled up
-        if (listState.firstVisibleItemIndex < lastScrollPosition.value) {
-            if (lastScrollType.value != ScrollingTypes.SCROLL_UP) {
+            if (listState.firstVisibleItemIndex > lastScrollPosition.value && lastScrollType.value != ScrollingTypes.SCROLL_FORWARD) {
+                lastScrollType.value = ScrollingTypes.SCROLL_FORWARD
                 onForwardScrollDetected.invoke()
-                lastScrollType.value = ScrollingTypes.SCROLL_UP
             }
+
+            lastScrollPosition.value = listState.firstVisibleItemIndex
         }
 
-        //set the lastScrollPosition to current position
-        lastScrollPosition.value = listState.firstVisibleItemIndex
-
-
-        if (
-            listState.layoutInfo.visibleItemsInfo.lastOrNull() != null
-            && listState.layoutInfo.visibleItemsInfo.lastOrNull()!!.index >= (listState.layoutInfo.totalItemsCount - buffer)
-            && lastFetchedAt.value < (listState.layoutInfo.totalItemsCount - buffer)
+        if(getFetchEvents)
+        LaunchedEffect(
+            key1 = listState.layoutInfo.visibleItemsInfo.lastOrNull() != null
+                    && listState.layoutInfo.visibleItemsInfo.lastOrNull()!!.index >= (listState.layoutInfo.totalItemsCount - buffer)
+                    && lastFetchedAt.value < (listState.layoutInfo.totalItemsCount - buffer),
         ) {
-            onFetchDetected.invoke()
-            lastFetchedAt.value = listState.layoutInfo.visibleItemsInfo.last().index
+
+            if (
+                listState.layoutInfo.visibleItemsInfo.lastOrNull() != null
+                && listState.layoutInfo.visibleItemsInfo.lastOrNull()!!.index >= (listState.layoutInfo.totalItemsCount - buffer)
+                && lastFetchedAt.value < (listState.layoutInfo.totalItemsCount - buffer)
+            ) {
+                onFetchDetected.invoke()
+                lastFetchedAt.value = listState.layoutInfo.visibleItemsInfo.last().index
+            }
+
+
         }
 
-        if(!listState.canScrollForward){
-            onEndReached.invoke()
-            lastScrollType.value = ScrollingTypes.END_REACHED
+        if(getEndReachedEvents)
+        LaunchedEffect(listState.canScrollForward) {
+            if (!listState.canScrollForward) onEndReached.invoke()
         }
     }
 }
+
+
 
 
 
