@@ -7,8 +7,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.CollectionSearchScreen
-import org.plux.marvelpedia.features.comics.comic_list.ui.ComicItem
-import org.plux.marvelpedia.features.comics.comic_search.ComicSearchViewModel
 import org.plux.marvelpedia.features.series.series_list.ui.SerieItem
 
 class SeriesSearchScreen : Screen {
