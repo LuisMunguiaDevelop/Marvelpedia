@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.CollectionMainContent
 import org.plux.marvelpedia.features.events.events_list.ui.EventItem
+import org.plux.marvelpedia.features.events.events_search.EventsSearchScreen
 
 class EventListScreen : Screen {
 
@@ -33,7 +34,7 @@ class EventListScreen : Screen {
             isFetching = uiState.isFetching,
             fetchDetected = { viewModel.fetchEvents() },
             onBackPressed = { navigator.pop() },
-            onSearchPressed = { }
+            onSearchPressed = { navigator.push(EventsSearchScreen()) }
         )
     }
 }
