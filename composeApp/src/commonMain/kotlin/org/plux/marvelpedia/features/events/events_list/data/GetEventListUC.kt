@@ -30,7 +30,7 @@ class GetEventListUC {
                         parameters.appendAll(
                             MarvelParametersBuilder()
                                 .setOffset(offset)
-                                .setTitleFilter(nameFilter)
+                                .setNameFilter(nameFilter)
                                 .setLimit(limit)
                                 .build()
                         )

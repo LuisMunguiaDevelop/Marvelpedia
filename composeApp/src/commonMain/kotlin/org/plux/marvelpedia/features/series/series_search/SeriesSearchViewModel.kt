@@ -1,4 +1,4 @@
-package org.plux.marvelpedia.features.characters.character_search
+package org.plux.marvelpedia.features.series.series_search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,15 +11,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.plux.marvelpedia.commons.model.SearchScreenState
 import org.plux.marvelpedia.commons.model.handleFilteredList
-import org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list.GetCharacterListUC
-import org.plux.marvelpedia.features.characters.character_list.model.Character
-import org.plux.marvelpedia.features.characters.character_list.model.toDomain
+import org.plux.marvelpedia.features.series.series_list.data.GetSeriesListUC
+import org.plux.marvelpedia.features.series.series_list.model.Serie
+import org.plux.marvelpedia.features.series.series_list.model.toDomain
 import org.plux.marvelpedia.network.ApiResponse
 
-class CharacterSearchViewModel(
-    private val getCharacterListUC: GetCharacterListUC
+class SeriesSearchViewModel(
+    private val getSeriesListUC: GetSeriesListUC
 ) : ViewModel() {
-    var state by mutableStateOf(SearchScreenState<Character>())
+    var state by mutableStateOf(SearchScreenState<Serie>())
         private set
 
     fun getList(nameFilter: String = "") {
@@ -27,18 +27,19 @@ class CharacterSearchViewModel(
             state = state,
             nameFilter = nameFilter,
             fetchList = { getFilteredList(state.nameFilter) },
-            clearList = { state = state.copy(list = emptyList())}
+            clearList = { state = state.copy(list = emptyList()) }
         )
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         state = SearchScreenState()
     }
 
     private fun getFilteredList(nameFilter: String = "") = viewModelScope.launch(Dispatchers.IO) {
-        getCharacterListUC(nameFilter = nameFilter).collectLatest { response ->
+        getSeriesListUC(nameFilter = nameFilter).collectLatest { response ->
             when (response) {
                 is ApiResponse.Error -> {
+                    println(response.data)
                 }
 
                 is ApiResponse.Loading -> {
@@ -46,12 +47,11 @@ class CharacterSearchViewModel(
                 }
 
                 is ApiResponse.Success -> {
-                    val characters: List<Character> =
+                    val series: List<Serie> =
                         response.data.data.results.map { it.toDomain() }
-                    state = state.copy(list = characters, isLoading = false)
+                    state = state.copy(list = series, isLoading = false)
                 }
             }
         }
     }
-
 }

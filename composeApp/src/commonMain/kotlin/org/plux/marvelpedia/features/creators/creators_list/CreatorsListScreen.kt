@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.CollectionMainContent
 import org.plux.marvelpedia.features.creators.creators_list.ui.CreatorItem
+import org.plux.marvelpedia.features.creators.creators_search.CreatorsSearchScreen
 
 class CreatorsListScreen : Screen {
 
@@ -33,7 +34,7 @@ class CreatorsListScreen : Screen {
             isFetching = uiState.isFetching,
             fetchDetected = { viewModel.fetchCreators() },
             onBackPressed = { navigator.pop() },
-            onSearchPressed = { }
+            onSearchPressed = { navigator.push(CreatorsSearchScreen()) }
         )
     }
 }
