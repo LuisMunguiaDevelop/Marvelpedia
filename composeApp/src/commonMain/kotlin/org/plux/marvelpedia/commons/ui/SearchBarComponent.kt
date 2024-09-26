@@ -21,7 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
@@ -45,6 +48,8 @@ fun SearchBarComponent(
 
     var lastTypingTime by remember { mutableStateOf(0L) }
     var typedTimes by remember { mutableStateOf(0) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // Start a coroutine to check for timeout
     LaunchedEffect(key1 = text) {
@@ -55,6 +60,12 @@ fun SearchBarComponent(
             }
             delay(100)
         }
+    }
+
+    LaunchedEffect(key1 = Unit) { // Request focus when composable is initialized
+        focusRequester.requestFocus()
+        keyboardController?.show()
+
     }
 
     Row(
@@ -121,6 +132,7 @@ fun SearchBarComponent(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.statusBars)
+                .focusRequester(focusRequester),
         )
     }
 }
