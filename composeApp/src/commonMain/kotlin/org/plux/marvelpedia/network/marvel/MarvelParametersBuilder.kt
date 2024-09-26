@@ -9,6 +9,7 @@ class MarvelParametersBuilder {
     private val parameters = ParametersBuilder()
     private var offset: Int = 0
     private var nameFilter: String = ""
+    private var titleFilter: String = ""
     private var limit: Int = 0
 
     fun build(): Parameters {
@@ -16,8 +17,9 @@ class MarvelParametersBuilder {
         parameters.append(MarvelParameters.TS, credentials.timeStamp)
         parameters.append(MarvelParameters.HASH, credentials.hash)
         if (offset != 0) parameters.append(MarvelParameters.OFFSET, offset.toString())
-        if(nameFilter.isNotBlank()) parameters.append(MarvelParameters.NAME_FILTER, nameFilter)
-        if(limit != 0) parameters.append(MarvelParameters.LIMIT, limit.toString())
+        if (nameFilter.isNotBlank()) parameters.append(MarvelParameters.NAME_FILTER, nameFilter)
+        if (titleFilter.isNotBlank()) parameters.append(MarvelParameters.TITLE_FILTER, titleFilter)
+        if (limit != 0) parameters.append(MarvelParameters.LIMIT, limit.toString())
         return parameters.build()
     }
 
@@ -31,7 +33,12 @@ class MarvelParametersBuilder {
         return this
     }
 
-    fun setLimit(limit: Int): MarvelParametersBuilder{
+    fun setTitleFilter(title: String): MarvelParametersBuilder {
+        this.titleFilter = title
+        return this
+    }
+
+    fun setLimit(limit: Int): MarvelParametersBuilder {
         this.limit = limit
         return this
     }
