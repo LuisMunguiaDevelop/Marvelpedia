@@ -27,6 +27,7 @@ import org.plux.marvelpedia.features.characters.character_detail.CharacterDetail
 import org.plux.marvelpedia.features.characters.character_list.ui.CharacterItem
 import org.plux.marvelpedia.features.characters.character_search.CharacterSearchScreen
 import org.plux.marvelpedia.features.comics.comic_list.ComicListScreen
+import org.plux.marvelpedia.features.series.series_list.SeriesListScreen
 
 class CharacterListScreen : Screen {
 
@@ -51,7 +52,8 @@ class CharacterListScreen : Screen {
             topBar = {
                 CharacterListTopBar(
                     onSearchPressed = { navigator.push(CharacterSearchScreen()) },
-                    onGoToComicsPressed = { navigator.push(ComicListScreen()) }
+                    onGoToComicsPressed = { navigator.push(ComicListScreen()) },
+                    onGoToSeriesPressed = { navigator.push(SeriesListScreen()) }
                 )
             }
         )
@@ -63,6 +65,7 @@ class CharacterListScreen : Screen {
 fun CharacterListTopBar(
     onSearchPressed: () -> Unit,
     onGoToComicsPressed: () -> Unit,
+    onGoToSeriesPressed: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -75,10 +78,16 @@ fun CharacterListTopBar(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             SectionButton(
                 buttonTitle = "Comics",
                 onClick = onGoToComicsPressed
+            )
+
+            SectionButton(
+                buttonTitle = "Series",
+                onClick = onGoToSeriesPressed
             )
         }
 

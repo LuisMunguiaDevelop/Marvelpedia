@@ -5,10 +5,10 @@ import org.koin.dsl.KoinAppDeclaration
 
 object KoinConfiguration {
 
-    fun initKoin(config: KoinAppDeclaration? = null){
-        startKoin{
+    fun initKoin(config: KoinAppDeclaration? = null) {
+        startKoin {
             config?.invoke(this)
-            modules(viewModelModule, characterListModule, comicsModule)
+            modules(viewModelModule, characterListModule, comicsModule, seriesModule)
         }
     }
 }
