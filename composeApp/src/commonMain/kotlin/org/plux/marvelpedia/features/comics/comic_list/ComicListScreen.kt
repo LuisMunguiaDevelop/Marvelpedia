@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.CollectionMainContent
 import org.plux.marvelpedia.features.comics.comic_list.ui.ComicItem
+import org.plux.marvelpedia.features.comics.comic_search.ComicSearchScreen
 
 class ComicListScreen : Screen {
 
@@ -20,7 +21,7 @@ class ComicListScreen : Screen {
         CollectionMainContent(
             title = "Comic List",
             content = {
-                items(uiState.comicList){ comic ->
+                items(uiState.comicList) { comic ->
                     ComicItem(
                         comic = comic,
                         onClick = {
@@ -32,7 +33,8 @@ class ComicListScreen : Screen {
             isLoading = uiState.isLoading,
             isFetching = uiState.isFetching,
             fetchDetected = { viewModel.fetchComics() },
-            onBackPressed = { navigator.pop() }
+            onBackPressed = { navigator.pop() },
+            onSearchPressed = { navigator.push(ComicSearchScreen()) }
         )
     }
 }

@@ -5,7 +5,6 @@ import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list.CharacterResponse
 import org.plux.marvelpedia.features.comics.comic_list.data.ComicResponse
 import org.plux.marvelpedia.network.ApiResponse
 import org.plux.marvelpedia.network.marvel.MarvelClient
@@ -32,7 +31,7 @@ class GetComicListUC {
                         parameters.appendAll(
                             MarvelParametersBuilder()
                                 .setOffset(offset)
-                                .setNameFilter(nameFilter)
+                                .setTitleFilter(nameFilter)
                                 .setLimit(limit)
                                 .build()
                         )
