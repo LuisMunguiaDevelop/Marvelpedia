@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.plux.marvelpedia.commons.ui.CollectionMainContent
 import org.plux.marvelpedia.features.series.series_list.ui.SerieItem
+import org.plux.marvelpedia.features.series.series_search.SeriesSearchScreen
 
 class SeriesListScreen : Screen {
 
@@ -33,7 +34,7 @@ class SeriesListScreen : Screen {
             isFetching = uiState.isFetching,
             fetchDetected = { viewModel.fetchSeries() },
             onBackPressed = { navigator.pop() },
-            onSearchPressed = { }
+            onSearchPressed = { navigator.push(SeriesSearchScreen()) }
         )
     }
 }
