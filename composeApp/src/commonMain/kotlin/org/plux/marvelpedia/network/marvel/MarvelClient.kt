@@ -11,6 +11,7 @@ object MarvelClient {
     const val MARVEL_API_CHARACTERS = "v1/public/characters?"
     const val MARVEL_API_COMICS = "v1/public/comics?"
     const val MARVEL_API_SERIES = "v1/public/series?"
+    const val MARVEL_API_EVENTS = "v1/public/events?"
 
     val marvelHttpClient = HttpClient {
         install(ContentNegotiation) {
