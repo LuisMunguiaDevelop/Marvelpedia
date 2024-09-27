@@ -7,12 +7,20 @@ import org.plux.marvelpedia.features.characters.character_detail.data.GetComicsB
 import org.plux.marvelpedia.features.characters.character_detail.data.GetEventsByCharacterUC
 import org.plux.marvelpedia.features.characters.character_list.CharacterListViewModel
 import org.plux.marvelpedia.features.characters.character_list.data.use_cases.get_character_list.GetCharacterListUC
+import org.plux.marvelpedia.features.characters.character_list.model.Character
 import org.plux.marvelpedia.features.characters.character_search.CharacterSearchViewModel
 
 val charactersModule = module {
     viewModel { CharacterListViewModel(get()) }
-    viewModel { parameters-> CharacterDetailViewModel(character = parameters.get(), get(), get()) }
+    viewModel { (character: Character) ->
+        CharacterDetailViewModel(
+            character = character,
+            get(),
+            get()
+        )
+    }
     viewModel { CharacterSearchViewModel(get()) }
+
 
     factory { GetCharacterListUC() }
     factory { GetComicsByCharacterUC() }
