@@ -25,7 +25,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import coil3.compose.AsyncImage
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.ParametersHolder
 import org.plux.marvelpedia.commons.ui.LoadingComponent
 import org.plux.marvelpedia.commons.ui.TopBarComponent
@@ -37,14 +37,18 @@ import org.plux.marvelpedia.features.events.events_list.ui.EventItem
 import org.plux.marvelpedia.theme.Typography
 import org.plux.marvelpedia.theme.primaryColor
 
-class CharacterDetailScreen(val character: Character) : Screen {
+class CharacterDetailScreen(
+    val character: Character,
+) : Screen {
+
 
     @Composable
     override fun Content() {
 
-        val viewModel = koinViewModel<CharacterDetailViewModel>(
+        val viewModel = koinInject<CharacterDetailViewModel>(
             parameters = { ParametersHolder().add(character) }
         )
+
         val uiState by lazy { viewModel.state }
 
         CharacterDetailContent(
