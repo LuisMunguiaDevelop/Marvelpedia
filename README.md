@@ -14,7 +14,7 @@ Preview
 
 ### Marvel API Key
 
-The project requires `marvel_public_api_key` and `marvel_private_api_key` to build. You can add them to your home-level **`gradle.properties`**.
+The project requires `marvel_public_api_key` and `marvel_private_api_key` to build. You can add them to your **`local.properties`**.
 
 ```properties
 MARVEL_PUBLIC_KEY=<YOUR_PUBLIC_KEY_HERE>
