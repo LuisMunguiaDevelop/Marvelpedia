@@ -14,11 +14,15 @@ Preview
 
 ### Marvel API Key
 
-The project requires `marvel_public_api_key` and `marvel_private_api_key` to build. You can add them to your **`local.properties`**.
+The project requires `marvel_public_api_key` and `marvel_private_api_key` to build.
+
+You can add them to your **`local.properties`**.
 
 ```properties
 MARVEL_PUBLIC_KEY=<YOUR_PUBLIC_KEY_HERE>
 MARVEL_PRIVATE_KEY=<YOUR_PRIVATE_KEY_HERE>
 ```
+
+If you dont have one, you can request it on  the [Marvel Developer Portal](https://developer.marvel.com/)
 
 ---
